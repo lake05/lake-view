@@ -1,5 +1,5 @@
 <template>
-  <component :is="tag" :style="styleProps" @click="handleClick">
+  <component class="w-h-10" :is="tag" :style="styleProps" @click="handleClick">
     {{ text }}
   </component>
 </template>
@@ -8,9 +8,9 @@
 import useComponentCommon from '~/hooks/useComponentCommon'
 import { textProps, textStylePropNames } from './props'
 
-defineOptions({
-  name: 'LText',
-})
+// defineOptions({
+//   name: 'LText',
+// })
 
 const props = defineProps(textProps)
 
@@ -19,3 +19,11 @@ const { styleProps, handleClick } = useComponentCommon(
   textStylePropNames,
 )
 </script>
+
+<style lang="scss" module>
+.w-h-10 {
+  width: 100px;
+  height: 100px;
+  background-color: aquamarine;
+}
+</style>
