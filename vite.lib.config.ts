@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import DefineOptions from 'unplugin-vue-define-options/vite'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import dts from 'vite-plugin-dts'
 import baseConfig from './vite.base.config'
 
@@ -44,7 +43,6 @@ export default defineConfig({
   plugins: [
     vue(),
     DefineOptions(),
-    cssInjectedByJsPlugin(),
     dts({
       copyDtsFiles: false,
       include: 'packages',

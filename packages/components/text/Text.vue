@@ -1,5 +1,5 @@
 <template>
-  <component class="w-h-10" :is="tag" :style="styleProps" @click="handleClick">
+  <component :is="tag" class="w-h-10" :style="styleProps" @click="handleClick">
     {{ text }}
   </component>
 </template>
