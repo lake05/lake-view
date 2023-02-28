@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+import RenderImg from './components/RenderImg'
+import RenderJsx from './components/RenderJsx'
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" />
+  <div>
+    <RenderImg />
+    <RenderJsx />
+    <HelloWorld msg="Vite + Vue" />
+  </div>
 </template>
 
 <style scoped>
