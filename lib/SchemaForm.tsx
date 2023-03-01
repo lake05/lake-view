@@ -1,13 +1,16 @@
 import { defineComponent, PropType } from 'vue'
-import { Schema, SchemaType } from './types'
+import { Schema, SchemaTypes } from './types'
+
+import SchemaItem from './SchemaItem'
 
 export default defineComponent({
   name: 'SchemaForm',
   props: {
-    schemas: {
-      type: Object as PropType<Schema>,
+    schema: {
+      type: Object as PropType<Schema | null>,
       required: true,
     },
+    // eslint-disable-next-line vue/require-prop-types
     value: {
       required: true,
     },
@@ -17,19 +20,16 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
+    const handleChange = (v: unknown) => {
+      props.onChange(v)
+    }
+
     return () => {
-      const schema = props.schemas
-      const type = schema?.type
+      const { schema, value } = props
 
-      switch (type) {
-        case SchemaType.STRING:
-          return <input type="text" />
-
-        default:
-          break
-      }
-
-      return <div>this is form</div>
+      return (
+        <SchemaItem schema={schema!} value={value} onChange={handleChange} />
+      )
     }
   },
 })
