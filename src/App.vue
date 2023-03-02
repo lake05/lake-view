@@ -51,7 +51,7 @@ function handleCodeChange(
   try {
     const json = JSON.parse(value)
     demo[filed] = json
-    ;(demo as any)[`${filed}Code`] = value
+    demo[`${filed}Code`] = value
   } catch (err) {
     // some thing
   }
@@ -83,18 +83,22 @@ const handleChange = (v: unknown) => {
             title="Schema"
             :code="demo.schemaCode"
             :on-change="handleSchemaChange"
-          />
+          >
+            <template #header>
+              <div class="bg-pink-400 p-2">title</div></template
+            >
+          </MonacoEditor>
           <MonacoEditor
-            :code="demo.uiSchemaCode"
             class="h-96"
-            :on-change="handleUISchemaChange"
             title="UISchema"
+            :code="demo.uiSchemaCode"
+            :on-change="handleUISchemaChange"
           />
           <MonacoEditor
-            :code="demo.dataCode"
             class="h-96"
-            :on-change="handleDataChange"
             title="Value"
+            :code="demo.dataCode"
+            :on-change="handleDataChange"
           />
         </div>
       </div>

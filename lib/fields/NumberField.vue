@@ -11,10 +11,20 @@ const props = defineProps<Props>()
 // TODO: 做代理
 const handleChange = (event: Event) => {
   const target = event.target as HTMLInputElement
-  props.onChange(target.value)
+  const num = Number(target.value)
+  if (Number.isNaN(num)) {
+    props.onChange(undefined)
+  } else {
+    props.onChange(num)
+  }
 }
 </script>
 
 <template>
-  <input type="text" :value="value" @input="handleChange" />
+  <input
+    class="border border-gray-500 rounded"
+    type="number"
+    :value="value"
+    @input="handleChange"
+  />
 </template>

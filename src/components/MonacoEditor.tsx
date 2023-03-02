@@ -47,10 +47,11 @@ export default defineComponent({
     },
     title: {
       type: String as PropType<string>,
-      required: true,
+      default: '',
     },
   },
-  setup(props) {
+
+  setup(props, { slots }) {
     const editorRef = shallowRef()
 
     const containerRef = ref<HTMLInputElement | null>(null)
@@ -114,9 +115,12 @@ export default defineComponent({
     return () => {
       return (
         <div class="flex flex-col border border-gray-500 rounded overflow-hidden">
-          <div class="bg-gray-300 py-3 pl-5">
-            <span>{props.title}</span>
-          </div>
+          {slots.header ? (
+            slots.header?.(props.title)
+          ) : props.title ? (
+            <div class="bg-gray-300 py-3 pl-5">{props.title}</div>
+          ) : null}
+
           <div class="grow" ref={containerRef}></div>
         </div>
       )
