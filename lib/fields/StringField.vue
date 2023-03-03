@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Schema } from 'lib/types'
+import { Schema } from '../types'
 
 type Props = {
   schema: Schema
+  rootSchema: Schema
   value: unknown
   onChange: (v: unknown) => void
 }

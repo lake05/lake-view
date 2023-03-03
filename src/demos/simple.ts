@@ -82,7 +82,7 @@ export default {
     lastName: 'Norris',
     age: 75,
     bio: 'Roundhouse kicking asses since 1940',
-    password: 'noneed',
-    singleTypeArray: [{ name: 'jokcy', age: 12 }],
+    password: 'node',
+    singleTypeArray: [{ name: 'Lake', age: 12 }],
   },
 }

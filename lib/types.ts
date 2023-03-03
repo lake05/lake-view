@@ -173,8 +173,24 @@ export interface CustomKeyword {
   transformSchema: (originSchema: Schema) => Schema
 }
 
-export type Props = {
-  schema: Schema
-  value: unknown
-  onChnage: (v: unknown) => void
-}
+export const FieldPropsDefine = {
+  schema: {
+    type: Object as PropType<Schema>,
+    required: true,
+  },
+  rootSchema: {
+    type: Object as PropType<Schema>,
+    required: true,
+  },
+  value: {
+    required: true,
+  },
+  onChange: {
+    type: Function as PropType<(v: unknown) => void>,
+    required: true,
+  },
+  // uiSchema: {
+  //   type: Object as PropType<UISchema>,
+  //   required: true,
+  // },
+} as const

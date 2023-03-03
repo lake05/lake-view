@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Schema, UISchema } from 'lib/types'
 import { reactive, ref, watchEffect } from 'vue'
 import MonacoEditor from './components/MonacoEditor'
 import SchemaForm from '../lib'
 // 这些是 json.schema 的例子（其中的结构也是有固定的结构的）
 import demos from './demos'
+import { Schema, UISchema } from '../lib/types'
 
 const selectedRef = ref<number>(0)
 
@@ -29,6 +29,7 @@ const demo: {
 })
 
 watchEffect(() => {
+  console.log('watchEffect: ')
   const index = selectedRef.value
   const d = demos[index]
   demo.schema = d.schema
@@ -69,12 +70,19 @@ const handleChange = (v: unknown) => {
 
 <template>
   <div class="container flex flex-col h-screen my-0 mx-auto">
-    <div class="mb-5">
-      <h1>Vue3 JsonSchema Form</h1>
-      <div>
-        <button>demo.name</button>
-      </div>
+    <h1 class="text-xl font-bold my-2">Vue3 JsonSchema Form</h1>
+    <div>
+      <button
+        v-for="(item, index) in demos"
+        :key="item.name"
+        class="px-3 py-1 m-1 bg-slate-300 border rounded hover:bg-blue-400 hover:text-white"
+        :class="{ 'bg-blue-400 text-white': index === selectedRef }"
+        @click="selectedRef = index"
+      >
+        {{ item.name }}
+      </button>
     </div>
+
     <div class="flex justify-between">
       <div class="w-2/4 mr-2">
         <div class="grid grid-cols-2 gap-4">
@@ -104,7 +112,7 @@ const handleChange = (v: unknown) => {
       </div>
       <div class="w-2/4 ml-2">
         <SchemaForm
-          :schema="demo.schema"
+          :schema="demo.schema!"
           :on-change="handleChange"
           :value="demo.data"
         />

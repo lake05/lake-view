@@ -6,7 +6,9 @@ export default defineComponent({
   setup(props, ctx) {
     return () => {
       // upload
-      return h('div', { id: 'imge' }, [h('img', { src: img, alt: 'VUE LOGO' })])
+      return h('div', { id: 'image' }, [
+        h('img', { src: img, alt: 'VUE LOGO' }),
+      ])
     }
   },
 })

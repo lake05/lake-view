@@ -1,13 +1,14 @@
-import { defineComponent, PropType } from 'vue'
-import { Schema, SchemaTypes } from './types'
+import { defineComponent, PropType, provide } from 'vue'
+import { SchemaFormContextKey } from './context'
 
 import SchemaItem from './SchemaItem'
+import { Schema } from './types'
 
 export default defineComponent({
   name: 'SchemaForm',
   props: {
     schema: {
-      type: Object as PropType<Schema | null>,
+      type: Object as PropType<Schema>,
       required: true,
     },
     // eslint-disable-next-line vue/require-prop-types
@@ -21,14 +22,25 @@ export default defineComponent({
   },
   setup(props) {
     const handleChange = (v: unknown) => {
-      props.onChange(v)
+      props.onChange && props.onChange(v)
     }
+
+    const context = {
+      SchemaItem,
+    }
+
+    provide(SchemaFormContextKey, context)
 
     return () => {
       const { schema, value } = props
 
       return (
-        <SchemaItem schema={schema!} value={value} onChange={handleChange} />
+        <SchemaItem
+          schema={schema}
+          rootSchema={schema}
+          value={value}
+          onChange={handleChange}
+        />
       )
     }
   },

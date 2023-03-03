@@ -1,3 +1,12 @@
+## 技术栈
+
+- TS
+- Pnpm
+- husky
+- Prettier + eslint
+- Cspell
+- Github Action
+
 ## 所有组件一次性全部导入并且作为插件使用
 
 ```js
