@@ -88,7 +88,7 @@
     "vite": "^4.0.0",
     "vite-plugin-circullar-dependency": "^0.0.2",
     "vite-plugin-dts": "^1.7.1",
-    "vitest": "^0.26.2",
+    "vitest": "^0.29.2",
     "vue": "^3.2.45",
     "vue-tsc": "^1.0.11"
   },

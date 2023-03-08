@@ -1,6 +1,8 @@
-import { FieldPropsDefine, Schema } from '../types'
 import { defineComponent, PropType } from 'vue'
+import { FieldPropsDefine, Schema } from '../types'
 import { useCommonFieldContext } from '../context'
+
+import SelectionWidget from '../widgets/Selection'
 
 const ArrayItemWrapper = defineComponent({
   name: 'ArrayItemWrapper',
@@ -99,7 +101,7 @@ export default defineComponent({
 
       const item = arr.splice(index, 1)
 
-      arr.splice(index - 1, 0, ...item)
+      arr.splice(index - 1, 0, item[0])
 
       props.onChange(arr)
     }
@@ -112,7 +114,7 @@ export default defineComponent({
 
       const item = arr.splice(index, 1)
 
-      arr.splice(index + 1, 0, item)
+      arr.splice(index + 1, 0, item[0])
 
       props.onChange(arr)
     }
@@ -196,9 +198,28 @@ export default defineComponent({
             />
           </ArrayItemWrapper>
         ))
+      } else {
+        // multiSelectArray: {
+        //   title: 'multiSelectArray',
+        //   type: 'array',
+        //   items: {
+        //     type: 'string',
+        //     enum: ['123', '456', '789'],
+        //   },
+        // }
+        const emumOptions = (schema.items as Schema).enum
+        const options = emumOptions!.map((e) => ({
+          key: e as string,
+          value: e,
+        }))
+        return (
+          <SelectionWidget
+            onChange={props.onChange}
+            value={props.value}
+            options={options}
+          />
+        )
       }
-
-      return <div>array field</div>
     }
   },
 })

@@ -35,7 +35,7 @@ export interface Schema {
   unknownOf?: Schema[]
   allOf?: Schema[]
   required?: string[]
-  enum?: unknown[]
+  enum?: (string | number)[]
   enumNames?: unknown[]
   enumKeyValue?: unknown[]
   additionalProperties?: unknown
