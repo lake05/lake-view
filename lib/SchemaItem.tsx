@@ -6,6 +6,7 @@ import NumberField from './fields/NumberField.vue'
 import ObjectField from './fields/ObjectField'
 
 import { retrieveSchema } from './utils'
+import ArrayField from './fields/ArrayField'
 
 export default defineComponent({
   name: 'SchemaItem',
@@ -31,6 +32,9 @@ export default defineComponent({
           break
         case SchemaTypes.NUMBER:
           FieldComponent = NumberField
+          break
+        case SchemaTypes.ARRAY:
+          FieldComponent = ArrayField
           break
         default:
           break

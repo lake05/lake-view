@@ -43,14 +43,14 @@ export interface Schema {
 
   minLength?: number
   maxLength?: number
-  minimun?: number
+  minimum?: number
   maximum?: number
   multipleOf?: number
   exclusiveMaximum?: number
   exclusiveMinimum?: number
 }
 
-export const FiledPropsDefine = {
+export const FieldPropsDefine = {
   schema: {
     type: Object as PropType<Schema>,
     required: true,
@@ -66,13 +66,13 @@ export const FiledPropsDefine = {
     type: Function as PropType<(v: unknown) => void>,
     required: true,
   },
-  uiSchema: {
-    type: Object as PropType<UISchema>,
-    required: true,
-  },
+  // uiSchema: {
+  //   type: Object as PropType<UISchema>,
+  //   required: true,
+  // },
 } as const
 
-export type CommonFieldType = DefineComponent<typeof FiledPropsDefine>
+export type CommonFieldType = DefineComponent<typeof FieldPropsDefine>
 
 export enum SelectionWidgetNames {
   SelectionWidget = 'SelectionWidget',
@@ -172,25 +172,3 @@ export interface CustomKeyword {
   deinition: VjsfKeywordDefinition
   transformSchema: (originSchema: Schema) => Schema
 }
-
-export const FieldPropsDefine = {
-  schema: {
-    type: Object as PropType<Schema>,
-    required: true,
-  },
-  rootSchema: {
-    type: Object as PropType<Schema>,
-    required: true,
-  },
-  value: {
-    required: true,
-  },
-  onChange: {
-    type: Function as PropType<(v: unknown) => void>,
-    required: true,
-  },
-  // uiSchema: {
-  //   type: Object as PropType<UISchema>,
-  //   required: true,
-  // },
-} as const

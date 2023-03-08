@@ -17,5 +17,10 @@ const handleChange = (event: Event) => {
 </script>
 
 <template>
-  <input type="text" :value="value" @input="handleChange" />
+  <input
+    class="border border-gray-500"
+    type="text"
+    :value="value"
+    @input="handleChange"
+  />
 </template>

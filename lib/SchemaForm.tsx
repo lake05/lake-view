@@ -2,7 +2,7 @@ import { defineComponent, PropType, provide } from 'vue'
 import { SchemaFormContextKey } from './context'
 
 import SchemaItem from './SchemaItem'
-import { Schema } from './types'
+import { CommonFieldType, Schema } from './types'
 
 export default defineComponent({
   name: 'SchemaForm',
@@ -26,7 +26,7 @@ export default defineComponent({
     }
 
     const context = {
-      SchemaItem,
+      SchemaItem: SchemaItem as CommonFieldType,
     }
 
     provide(SchemaFormContextKey, context)

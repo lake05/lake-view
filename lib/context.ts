@@ -1,6 +1,16 @@
-import { DefineComponent, InjectionKey } from 'vue'
-import { FieldPropsDefine } from './types'
+import { inject, InjectionKey } from 'vue'
+import { CommonFieldType } from './types'
 
 export const SchemaFormContextKey = Symbol() as InjectionKey<{
-  SchemaItem: DefineComponent<typeof FieldPropsDefine>
+  SchemaItem: CommonFieldType
 }>
+
+export function useCommonFieldContext() {
+  const context = inject(SchemaFormContextKey)
+
+  if (!context) {
+    throw new Error('SchemaForm should be  used')
+  }
+
+  return context
+}

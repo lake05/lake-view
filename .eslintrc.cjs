@@ -23,6 +23,7 @@ module.exports = {
     semi: ['error', 'never'],
     'comma-dangle': ['error', 'always-multiline'],
     'vue/multi-word-component-names': 'off',
+    'vue/one-component-per-file': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
   },
   globals: {
