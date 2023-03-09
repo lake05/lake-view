@@ -9,7 +9,7 @@ export default {
   },
   resolve: {
     alias: {
-      '~': _resolve('packages'),
+      '~': _resolve('lib'),
     },
   },
 }

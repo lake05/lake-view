@@ -13,10 +13,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["vitest/globals", "unplugin-vue-define-options/macros-global"],
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["packages/*"]
-    }
+    "baseUrl": "."
   },
   "include": [
     "src/**/*.ts",
@@ -26,7 +23,8 @@
     "lib/**/*.ts",
     "lib/**/*.d.ts",
     "lib/**/*.tsx",
-    "lib/**/*.vue"
+    "lib/**/*.vue",
+    "test/**/*.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -84,6 +84,7 @@ const obj = new Proxy(data, {
       effects.forEach((effectFn) => {
         // 读取和设置操作是在同一个副作用函数内进行的
         // 如果 trigger 触发执行的副作用函数与当前正在执行的副作用函数相同，则不触发执行
+
         if (effectFn !== activeEffect) {
           effectToRun.add(effectFn)
         }
@@ -112,19 +113,19 @@ const obj = new Proxy(data, {
 //   console.log('bucket: ', bucket)
 // }, 2000)
 
-let temp1, temp2
+// let temp1, temp2
 
-effect(function effectFn1() {
-  console.log('effectFn1: 执行')
+// effect(function effectFn1() {
+//   console.log('effectFn1: 执行')
 
-  effect(function effectFn2() {
-    console.log('effectFn2: 执行')
+//   effect(function effectFn2() {
+//     console.log('effectFn2: 执行')
 
-    temp2 = obj.bar
-  })
+//     temp2 = obj.bar
+//   })
 
-  temp1 = obj.foo
-})
+//   temp1 = obj.foo
+// })
 
 // setTimeout(() => {
 //   obj.foo = 1
@@ -159,7 +160,8 @@ function flushJob() {
 effect(() => console.log(obj.foo), {
   schedule: (fn) => {
     // set动作触发副作用函数重新执行时，有能力决定副作用函数执行的时机、次数以及方式
-    setTimeout(fn)
+    jobQueue.add(fn)
+    flushJob()
   },
 }) // Maximum call stack size exceeded
 

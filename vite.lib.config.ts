@@ -11,7 +11,7 @@ export default defineConfig({
   publicDir: false,
   build: {
     lib: {
-      entry: join(__dirname, './packages/index.ts'),
+      entry: join(__dirname, './lib/index.ts'),
       formats: ['es', 'umd'],
       name: 'LakeView',
       // the proper extensions will be added

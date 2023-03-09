@@ -10,7 +10,13 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
-  overrides: [],
+  overrides: [
+    {
+      // 3) Now we enable eslint-plugin-testing-library rules or preset only for matching testing files!
+      files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+      extends: ['plugin:testing-library/react'],
+    },
+  ],
   parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -21,6 +27,7 @@ module.exports = {
   rules: {
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
+    '@typescript-eslint/no-empty-function': 'off',
     'comma-dangle': ['error', 'always-multiline'],
     'vue/multi-word-component-names': 'off',
     'vue/one-component-per-file': 'off',
