@@ -1,8 +1,8 @@
 import { defineComponent, PropType } from 'vue'
-import { FieldPropsDefine, Schema } from '../types'
+import { FieldPropsDefine, Schema, SelectionWidgetNames } from '../types'
 import { useCommonFieldContext } from '../context'
 
-import SelectionWidget from '../widgets/Selection'
+import { getWidget } from '../theme'
 
 const ArrayItemWrapper = defineComponent({
   name: 'ArrayItemWrapper',
@@ -128,11 +128,14 @@ export default defineComponent({
       props.onChange(arr)
     }
 
+    const SelectionWidgetRef = getWidget(SelectionWidgetNames.SelectionWidget)
+
     return () => {
       const { SchemaItem } = context
       const { schema, rootSchema, value } = props
       const isMultiple = Array.isArray(schema.items)
       const isSelect = schema.items && (schema.items as Schema).enum
+      const SelectionWidget = SelectionWidgetRef.value
 
       if (isMultiple) {
         // staticArray
@@ -207,8 +210,8 @@ export default defineComponent({
         //     enum: ['123', '456', '789'],
         //   },
         // }
-        const emumOptions = (schema.items as Schema).enum
-        const options = emumOptions!.map((e) => ({
+        const enumOptions = (schema.items as Schema).enum
+        const options = enumOptions!.map((e) => ({
           key: e as string,
           value: e,
         }))

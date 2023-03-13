@@ -5,6 +5,8 @@ import SchemaForm from '../lib'
 // 这些是 json.schema 的例子（其中的结构也是有固定的结构的）
 import demos from './demos'
 import { Schema, UISchema } from '../lib/types'
+import themeDefault from '../lib/theme-default'
+import ThemeProvider from '../lib/theme'
 
 const selectedRef = ref<number>(0)
 
@@ -111,11 +113,13 @@ const handleChange = (v: unknown) => {
         </div>
       </div>
       <div class="w-2/4 ml-2">
-        <SchemaForm
-          :schema="demo.schema!"
-          :on-change="handleChange"
-          :value="demo.data"
-        />
+        <ThemeProvider :theme="themeDefault">
+          <SchemaForm
+            :schema="demo.schema!"
+            :on-change="handleChange"
+            :value="demo.data"
+          />
+        </ThemeProvider>
       </div>
     </div>
   </div>

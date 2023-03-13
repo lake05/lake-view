@@ -1,5 +1,6 @@
 import { FormatDefinition } from 'ajv/dist/types'
 import { DefineComponent, PropType } from 'vue'
+import SelectionWidget from './widgets/Selection'
 
 // 会把一些通用的类型统一放在这个 ts 文件里面
 export enum SchemaTypes {
@@ -74,26 +75,22 @@ export const FieldPropsDefine = {
 
 export type CommonFieldType = DefineComponent<typeof FieldPropsDefine>
 
-export enum SelectionWidgetNames {
-  SelectionWidget = 'SelectionWidget',
-}
-
 export const CommonWidgetPropsDefine = {
   value: {},
   onChange: {
     type: Function as PropType<(v: unknown) => void>,
     required: true,
   },
-  errors: {
-    type: Array as PropType<string[]>,
-  },
-  schema: {
-    type: Object as PropType<Schema>,
-    required: true,
-  },
-  options: {
-    type: Object as PropType<{ [key: string]: unknown }>,
-  },
+  // errors: {
+  //   type: Array as PropType<string[]>,
+  // },
+  // schema: {
+  //   type: Object as PropType<Schema>,
+  //   required: true,
+  // },
+  // options: {
+  //   type: Object as PropType<{ [key: string]: unknown }>,
+  // },
 } as const
 
 export const SelectionWidgetPropsDefine = {
@@ -110,11 +107,9 @@ export const SelectionWidgetPropsDefine = {
 } as const
 
 export type CommonWidgetDefine = DefineComponent<typeof CommonWidgetPropsDefine>
-export type SelectionWidgetDefine = DefineComponent<
-  typeof SelectionWidgetPropsDefine
->
+export type SelectionWidgetDefine = typeof SelectionWidget
 
-export enum SelectionWidgetName {
+export enum SelectionWidgetNames {
   SelectionWidget = 'SelectionWidget',
 }
 
@@ -125,7 +120,7 @@ export enum CommonWidgetNames {
 
 export interface Theme {
   widgets: {
-    [SelectionWidgetName.SelectionWidget]: SelectionWidgetDefine
+    [SelectionWidgetNames.SelectionWidget]: SelectionWidgetDefine
     [CommonWidgetNames.TextWidget]: CommonWidgetDefine
     [CommonWidgetNames.NumberWidget]: CommonWidgetDefine
   }

@@ -9,7 +9,7 @@ export default {
   },
   resolve: {
     alias: {
-      '~': _resolve('lib'),
+      lib: _resolve('lib'),
     },
   },
 }
