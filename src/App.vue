@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, watchEffect } from 'vue'
+// import TestView from './TestView.vue'
 import MonacoEditor from './components/MonacoEditor'
 import SchemaForm from '../lib'
 // 这些是 json.schema 的例子（其中的结构也是有固定的结构的）
@@ -7,6 +8,7 @@ import demos from './demos'
 import { Schema, UISchema } from '../lib/types'
 import themeDefault from '../lib/theme-default'
 import ThemeProvider from '../lib/theme'
+import { SchemaFormRef } from '../lib/SchemaForm'
 
 const selectedRef = ref<number>(0)
 
@@ -29,9 +31,7 @@ const demo: {
   uiSchemaCode: '',
   customValidate: undefined,
 })
-
 watchEffect(() => {
-  console.log('watchEffect: ')
   const index = selectedRef.value
   const d = demos[index]
   demo.schema = d.schema
@@ -68,10 +68,17 @@ const handleChange = (v: unknown) => {
   demo.data = v
   demo.dataCode = toJson(v)
 }
+const schemaFormRef = ref<SchemaFormRef | null>(null)
+
+const doValidate = () => {
+  const validate = schemaFormRef.value?.doValidate()
+  console.log('validate: ', validate)
+}
 </script>
 
 <template>
   <div class="container flex flex-col h-screen my-0 mx-auto">
+    <div id="extendApp"></div>
     <h1 class="text-xl font-bold my-2">Vue3 JsonSchema Form</h1>
     <div>
       <button
@@ -115,11 +122,19 @@ const handleChange = (v: unknown) => {
       <div class="w-2/4 ml-2">
         <ThemeProvider :theme="themeDefault">
           <SchemaForm
+            ref="schemaFormRef"
             :schema="demo.schema!"
             :on-change="handleChange"
             :value="demo.data"
           />
         </ThemeProvider>
+
+        <button
+          class="px-3 py-1 m-1 bg-slate-300 border rounded hover:bg-blue-400 hover:text-white"
+          @click="doValidate"
+        >
+          校验
+        </button>
       </div>
     </div>
   </div>
