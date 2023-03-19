@@ -167,3 +167,28 @@ export interface CustomKeyword {
   deinition: VjsfKeywordDefinition
   transformSchema: (originSchema: Schema) => Schema
 }
+
+export type Language =
+  | 'en'
+  | 'ar'
+  | 'ca'
+  | 'cs'
+  | 'de'
+  | 'es'
+  | 'fi'
+  | 'fr'
+  | 'hu'
+  | 'id'
+  | 'it'
+  | 'ja'
+  | 'ko'
+  | 'nb'
+  | 'nl'
+  | 'pl'
+  | 'pt-BR'
+  | 'ru'
+  | 'sk'
+  | 'sv'
+  | 'th'
+  | 'zh'
+  | 'zh-TW'
