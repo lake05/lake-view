@@ -10,7 +10,7 @@ import Ajv, { Options } from 'ajv'
 
 import SchemaItem from './SchemaItem'
 import { CommonFieldType, Schema, Language } from './types'
-import { validateFormData } from './validator'
+import { ErrorSchema, validateFormData } from './validator'
 
 export interface SchemaFormRef {
   doValidate: () => {
@@ -22,6 +22,8 @@ export interface SchemaFormRef {
 const defaultAjvOptions: Options = {
   allErrors: true,
 }
+
+export type CustomValid = (data: any, errors: any) => void
 
 export default defineComponent({
   name: 'SchemaForm',
@@ -46,10 +48,13 @@ export default defineComponent({
       type: String as PropType<Language>,
       default: 'zh',
     },
+    customValidata: {
+      type: Function as PropType<CustomValid>,
+      default: null,
+    },
   },
   setup(props, { expose }) {
     const handleChange = (v: unknown) => {
-      console.log('v: ', v)
       props.onChange && props.onChange(v)
     }
 
@@ -65,6 +70,8 @@ export default defineComponent({
       validateRef.value = new Ajv({ ...defaultAjvOptions, ...props.ajvOptions })
     })
 
+    const errorSchemaRef = shallowRef<ErrorSchema>({})
+
     const exposeContext: SchemaFormRef = {
       doValidate: () => {
         const ajv = validateRef.value!
@@ -74,8 +81,9 @@ export default defineComponent({
           props.value,
           props.schema,
           props.locale,
+          props.customValidata,
         )
-
+        errorSchemaRef.value = result.errorSchema
         return result
       },
     }
@@ -87,6 +95,7 @@ export default defineComponent({
 
       return (
         <SchemaItem
+          errorSchema={errorSchemaRef.value}
           schema={schema}
           rootSchema={schema}
           value={value}

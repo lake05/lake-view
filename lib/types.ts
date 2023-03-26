@@ -1,5 +1,6 @@
 import { FormatDefinition } from 'ajv/dist/types'
 import { DefineComponent, PropType } from 'vue'
+import { ErrorSchema } from './validator'
 import SelectionWidget from './widgets/Selection'
 
 // 会把一些通用的类型统一放在这个 ts 文件里面
@@ -67,6 +68,10 @@ export const FieldPropsDefine = {
     type: Function as PropType<(v: unknown) => void>,
     required: true,
   },
+  errorSchema: {
+    type: Object as PropType<ErrorSchema>,
+    required: true,
+  },
   // uiSchema: {
   //   type: Object as PropType<UISchema>,
   //   required: true,
@@ -81,13 +86,13 @@ export const CommonWidgetPropsDefine = {
     type: Function as PropType<(v: unknown) => void>,
     required: true,
   },
-  // errors: {
-  //   type: Array as PropType<string[]>,
-  // },
-  // schema: {
-  //   type: Object as PropType<Schema>,
-  //   required: true,
-  // },
+  errors: {
+    type: Array as PropType<string[]>,
+  },
+  schema: {
+    type: Object as PropType<Schema>,
+    required: true,
+  },
   // options: {
   //   type: Object as PropType<{ [key: string]: unknown }>,
   // },

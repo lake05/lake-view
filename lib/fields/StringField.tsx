@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { getWidget } from 'lib/theme'
 
 export default defineComponent({
+  name: 'StringField',
   props: FieldPropsDefine,
   setup(props) {
     const TextWidthRef = getWidget(CommonWidgetNames.TextWidget)
@@ -11,7 +12,15 @@ export default defineComponent({
     }
     return () => {
       const TextWidth = TextWidthRef.value
-      return <TextWidth value={props.value} onChange={handleChange} />
+      const { schema, value, errorSchema } = props
+      return (
+        <TextWidth
+          value={value}
+          errors={errorSchema.__errors}
+          schema={schema}
+          onChange={handleChange}
+        />
+      )
     }
   },
 })

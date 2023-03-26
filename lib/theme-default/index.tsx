@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import SelectionWidget from '../widgets/Selection'
+import SelectionWidget from './SelectionWidget'
 import TextWidget from './TextWidget'
 import NumWidget from './NumWidget'
 

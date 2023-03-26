@@ -1,7 +1,8 @@
 import Ajv, { ErrorObject } from 'ajv'
 import localize from 'ajv-i18n'
-import { toPath } from 'lodash-es'
+import { toPath } from './utils'
 import { Language, Schema } from './types'
+import { CustomValid } from './SchemaForm'
 
 interface TransformErrorsObject {
   name: string
@@ -13,7 +14,7 @@ interface TransformErrorsObject {
 
 export type ErrorSchema = {
   [level: string]: ErrorSchema
-} & { __errors: string[] }
+} & { __errors?: string[] }
 
 function toErrorChema(errors: TransformErrorsObject[]) {
   if (errors.length < 1) return {}
@@ -21,6 +22,7 @@ function toErrorChema(errors: TransformErrorsObject[]) {
   return errors.reduce((errorSchema, error) => {
     const { property, message } = error
     const path = toPath(property)
+
     let parent = errorSchema
 
     // if path is at the root '/src/...'
@@ -50,15 +52,18 @@ function transformErrors(
   errors: ErrorObject[] | null | undefined,
 ): TransformErrorsObject[] {
   if (errors === null || errors === undefined) return []
-  return errors.map(({ message, schemaPath, keyword, params, data }) => {
-    return {
-      name: keyword,
-      property: `${data}`,
-      message,
-      params,
-      schemaPath,
-    }
-  })
+
+  return errors.map(
+    ({ message, schemaPath, keyword, params, instancePath }) => {
+      return {
+        name: keyword,
+        property: instancePath,
+        message,
+        params,
+        schemaPath,
+      }
+    },
+  )
 }
 
 export function validateFormData(
@@ -66,12 +71,13 @@ export function validateFormData(
   formData: unknown,
   schema: Schema,
   locale: Language = 'zh',
+  customValidata?: CustomValid,
 ) {
   let validationError = null
   try {
     validator.validate(schema, formData)
   } catch (error) {
-    validationError = error as { message: string }
+    validationError = error as Error
   }
   localize[locale](validator.errors)
   let errors = transformErrors(validator.errors)
@@ -86,9 +92,40 @@ export function validateFormData(
   }
 
   const errorSchema = toErrorChema(errors)
-  return {
-    errors,
-    errorSchema,
-    valid: errors.length === 0,
+
+  if (!customValidata) {
+    return {
+      errors,
+      errorSchema,
+      valid: errors.length === 0,
+    }
   }
+
+  /**
+   * {
+   *  obj: {
+   *    a: {b: {__error: ''}}
+   *  }
+   * }
+   */
+
+  customValidata(formData, errorSchema)
+}
+
+function createErrorProxy() {
+  const raw = {}
+  return new Proxy(raw, {
+    get(target, key, receiver) {
+      if (key === 'addError') {
+        return () => {}
+      }
+      const res = Reflect.get(target, key, receiver)
+      if (res === undefined) {
+        const p = createErrorProxy()
+        res[key] = p
+        return p
+      }
+      return res
+    },
+  })
 }

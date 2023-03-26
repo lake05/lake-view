@@ -58,6 +58,7 @@
     "ajv-i18n": "^4.2.0",
     "jsonpointer": "^5.0.1",
     "lodash-es": "^4.17.21",
+    "lodash.topath": "^4.5.2",
     "monaco-editor": "^0.36.1"
   },
   "peerDependencies": {

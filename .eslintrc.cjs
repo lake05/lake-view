@@ -32,6 +32,7 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/one-component-per-file': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    // '@typescript-eslint/no-explicit-any': 'off',
   },
   globals: {
     defineOptions: true,

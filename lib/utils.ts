@@ -575,3 +575,7 @@ export function getMatchingOption(
 //   }
 //   return formData || defaults
 // }
+
+export function toPath(path: string): string[] {
+  return path.split(/[\\/]/)
+}

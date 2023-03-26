@@ -16,7 +16,15 @@ export default defineComponent({
     }
     return () => {
       const NumWidth = NumWidthRef.value
-      return <NumWidth value={props.value} onChange={handleChange} />
+      const { value, errorSchema, schema } = props
+      return (
+        <NumWidth
+          value={value}
+          errors={errorSchema.__errors}
+          onChange={handleChange}
+          schema={schema}
+        />
+      )
     }
   },
 })
