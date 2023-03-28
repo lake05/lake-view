@@ -165,7 +165,5 @@ effect(() => console.log(obj.foo), {
   },
 }) // Maximum call stack size exceeded
 
-obj.foo++
-obj.foo++
-
+obj.foo.a.b++
 console.log('结束了')

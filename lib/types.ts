@@ -78,6 +78,8 @@ export const FieldPropsDefine = {
   // },
 } as const
 
+export type CustomValidate = (data: any, errors: any) => void
+
 export type CommonFieldType = DefineComponent<typeof FieldPropsDefine>
 
 export const CommonWidgetPropsDefine = {

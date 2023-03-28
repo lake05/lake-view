@@ -1,8 +1,8 @@
 import Ajv, { ErrorObject } from 'ajv'
 import localize from 'ajv-i18n'
-import { toPath } from './utils'
+import { hasOwn, isObject, toPath } from './utils'
 import { Language, Schema } from './types'
-import { CustomValid } from './SchemaForm'
+import { CustomValidate } from './types'
 
 interface TransformErrorsObject {
   name: string
@@ -16,7 +16,7 @@ export type ErrorSchema = {
   [level: string]: ErrorSchema
 } & { __errors?: string[] }
 
-function toErrorChema(errors: TransformErrorsObject[]) {
+function toErrorSchema(errors: TransformErrorsObject[]) {
   if (errors.length < 1) return {}
 
   return errors.reduce((errorSchema, error) => {
@@ -66,12 +66,12 @@ function transformErrors(
   )
 }
 
-export function validateFormData(
+export async function validateFormData(
   validator: Ajv,
   formData: unknown,
   schema: Schema,
   locale: Language = 'zh',
-  customValidata?: CustomValid,
+  customValidate?: CustomValidate,
 ) {
   let validationError = null
   try {
@@ -91,9 +91,9 @@ export function validateFormData(
     ]
   }
 
-  const errorSchema = toErrorChema(errors)
+  const errorSchema = toErrorSchema(errors)
 
-  if (!customValidata) {
+  if (!customValidate) {
     return {
       errors,
       errorSchema,
@@ -108,24 +108,59 @@ export function validateFormData(
    *  }
    * }
    */
+  const proxy = createErrorProxy()
+  await customValidate(formData, proxy)
 
-  customValidata(formData, errorSchema)
+  const newErrorSchema = mergeObjects(errorSchema, proxy, true)
+
+  return {
+    errors,
+    errorSchema: newErrorSchema,
+    valid: errors.length === 0,
+  }
 }
 
 function createErrorProxy() {
-  const raw = {}
-  return new Proxy(raw, {
+  const obj = {}
+  return new Proxy(obj, {
     get(target, key, receiver) {
       if (key === 'addError') {
-        return () => {}
+        return (msg: string) => {
+          const __errors = Reflect.get(target, '__errors', receiver)
+
+          if (__errors && Array.isArray(__errors)) {
+            __errors.push(msg)
+          } else {
+            ;(target as any).__errors = [msg]
+          }
+        }
       }
       const res = Reflect.get(target, key, receiver)
+
       if (res === undefined) {
-        const p = createErrorProxy()
-        res[key] = p
+        const p: any = createErrorProxy()
+        ;(target as any)[key] = p // 防止重复触发getter 不能直接读取
         return p
       }
       return res
     },
   })
+}
+
+export function mergeObjects(obj1: any, obj2: any, concatArrays = false) {
+  // Recursively merge deeply nested objects.
+  const acc = { ...obj1 } // prevent mutation of source object
+
+  return Object.keys(obj2).reduce((acc, key) => {
+    const left = obj1 ? obj1[key] : {},
+      right = obj2[key]
+    if (obj1 && hasOwn(obj1, key) && isObject(right)) {
+      acc[key] = mergeObjects(left, right, concatArrays)
+    } else if (concatArrays && Array.isArray(left) && Array.isArray(right)) {
+      acc[key] = left.concat(right)
+    } else {
+      acc[key] = right
+    }
+    return acc
+  }, acc)
 }

@@ -2,6 +2,7 @@ import {
   defineComponent,
   PropType,
   provide,
+  ref,
   shallowRef,
   watchEffect,
 } from 'vue'
@@ -9,21 +10,20 @@ import { SchemaFormContextKey } from './context'
 import Ajv, { Options } from 'ajv'
 
 import SchemaItem from './SchemaItem'
-import { CommonFieldType, Schema, Language } from './types'
+import { CommonFieldType, Schema, Language, CustomValidate } from './types'
 import { ErrorSchema, validateFormData } from './validator'
 
 export interface SchemaFormRef {
-  doValidate: () => {
+  doValidate: () => Promise<{
     errors: unknown[]
+    errorSchema: ErrorSchema
     valid: boolean
-  }
+  }>
 }
 
 const defaultAjvOptions: Options = {
   allErrors: true,
 }
-
-export type CustomValid = (data: any, errors: any) => void
 
 export default defineComponent({
   name: 'SchemaForm',
@@ -48,8 +48,8 @@ export default defineComponent({
       type: String as PropType<Language>,
       default: 'zh',
     },
-    customValidata: {
-      type: Function as PropType<CustomValid>,
+    customValidate: {
+      type: Function as PropType<CustomValidate>,
       default: null,
     },
   },
@@ -72,16 +72,18 @@ export default defineComponent({
 
     const errorSchemaRef = shallowRef<ErrorSchema>({})
 
+    const validateResolveRef = ref()
+
     const exposeContext: SchemaFormRef = {
-      doValidate: () => {
+      doValidate: async () => {
         const ajv = validateRef.value!
 
-        const result = validateFormData(
+        const result = await validateFormData(
           ajv,
           props.value,
           props.schema,
           props.locale,
-          props.customValidata,
+          props.customValidate,
         )
         errorSchemaRef.value = result.errorSchema
         return result

@@ -8,16 +8,18 @@ export function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/**
+ * 直接调用`obj.hasOwnProperty`有可能会因为
+ * obj 覆盖了 prototype 上的 hasOwnProperty 而产生错误
+ */
+export const hasOwnProperty = Object.prototype.hasOwnProperty
+export const hasOwn = (
+  val: object,
+  key: string | symbol,
+): key is keyof typeof val => hasOwnProperty.call(val, key)
+
 export function isEmptyObject(obj: unknown) {
   return isObject(obj) && Object.keys(obj).length === 0
-}
-
-export function hasOwnProperty(obj: unknown, key: string) {
-  /**
-   * 直接调用`obj.hasOwnProperty`有可能会因为
-   * obj 覆盖了 prototype 上的 hasOwnProperty 而产生错误
-   */
-  return Object.prototype.hasOwnProperty.call(obj, key)
 }
 
 // import { isObject, hasOwnProperty, getSchemaType, guessType } from './utils'
@@ -37,12 +39,12 @@ export function validateData(schema: any, data: any) {
 // NOTE: 核心方法
 export function resolveSchema(schema: Schema, rootSchema = {}, formData = {}) {
   // 传入的 schema 是否存在这个引用，这个 schema 实际上是引用至其他的类型
-  if (hasOwnProperty(schema, '$ref')) {
+  if (hasOwn(schema, '$ref')) {
     return resolveReference(schema, rootSchema, formData)
-  } else if (hasOwnProperty(schema, 'dependencies')) {
+  } else if (hasOwn(schema, 'dependencies')) {
     const resolvedSchema = resolveDependencies(schema, rootSchema, formData)
     return retrieveSchema(resolvedSchema, rootSchema, formData)
-  } else if (hasOwnProperty(schema, 'allOf') && Array.isArray(schema.allOf)) {
+  } else if (hasOwn(schema, 'allOf') && Array.isArray(schema.allOf)) {
     return {
       ...schema,
       allOf: schema.allOf.map((allOfSubschema) =>
@@ -82,7 +84,7 @@ export function retrieveSchema(
     }
   }
   const hasAdditionalProperties =
-    hasOwnProperty(resolvedSchema, 'additionalProperties') &&
+    hasOwn(resolvedSchema, 'additionalProperties') &&
     resolvedSchema.additionalProperties !== false
   if (hasAdditionalProperties) {
     // put formData existing additional properties into schema
@@ -110,19 +112,19 @@ export function stubExistingAdditionalProperties(
   }
 
   Object.keys(formData).forEach((key) => {
-    if (hasOwnProperty(schema, key)) {
+    if (hasOwn(schema, key)) {
       // No need to stub, our schema already has the property
       return
     }
 
     let additionalProperties
-    if (hasOwnProperty(schema, '$ref')) {
+    if (hasOwn(schema, '$ref')) {
       additionalProperties = retrieveSchema(
         { $ref: (schema?.additionalProperties as any)['$ref'] },
         rootSchema,
         formData,
       )
-    } else if (hasOwnProperty(schema, 'type')) {
+    } else if (hasOwn(schema, 'type')) {
       additionalProperties = { ...(schema.additionalProperties as object) }
     } else {
       additionalProperties = { type: guessType(formData[key]) }
@@ -142,10 +144,10 @@ export function stubExistingAdditionalProperties(
 //   rootSchema: any = {},
 //   data: any = {}
 // ): Schema {
-//   if (hasOwnProperty(schema, '$ref')) {
+//   if (hasOwn(schema, '$ref')) {
 //     return resolveReference(schema, rootSchema, data)
 //   }
-//   if (hasOwnProperty(schema, 'dependencies')) {
+//   if (hasOwn(schema, 'dependencies')) {
 //     const resolvedSchema = resolveSchema(schema)
 //   }
 // }
@@ -171,7 +173,7 @@ export function findSchemaDefinition($ref: string, rootSchema = {}): Schema {
   if (current === undefined) {
     throw new Error(`Could not find a definition for ${origRef}.`)
   }
-  if (hasOwnProperty(current, '$ref')) {
+  if (hasOwn(current, '$ref')) {
     // return { ...current, findSchemaDefinition(current.$ref, rootSchema) }  ?
     return findSchemaDefinition(current.$ref, rootSchema)
   }
@@ -273,7 +275,7 @@ function withDependentSchema(
   }
   // Resolve $refs inside oneOf.
   const resolvedOneOf = oneOf.map((subschema) =>
-    hasOwnProperty(subschema, '$ref')
+    hasOwn(subschema, '$ref')
       ? resolveReference(subschema, rootSchema, formData)
       : subschema,
   )
@@ -338,7 +340,7 @@ export function mergeSchemas(obj1: any, obj2: any) {
   return Object.keys(obj2).reduce((acc, key) => {
     const left = obj1 ? obj1[key] : {},
       right = obj2[key]
-    if (obj1 && hasOwnProperty(obj1, key) && isObject(right)) {
+    if (obj1 && hasOwn(obj1, key) && isObject(right)) {
       acc[key] = mergeSchemas(left, right)
     } else if (
       obj1 &&

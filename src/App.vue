@@ -8,7 +8,7 @@ import demos from './demos'
 import { Schema, UISchema } from '../lib/types'
 import themeDefault from '../lib/theme-default'
 import ThemeProvider from '../lib/theme'
-import { SchemaFormRef } from '../lib/SchemaForm'
+import { SchemaFormRef } from 'lib/SchemaForm'
 
 const selectedRef = ref<number>(0)
 
@@ -21,7 +21,7 @@ const demo: {
   schemaCode: string
   dataCode: string
   uiSchemaCode: string
-  customValidate: ((d: unknown, e: unknown) => void) | undefined
+  customValidate: ((data: any, error: any) => void) | undefined
 } = reactive({
   schema: null,
   data: {},
@@ -33,13 +33,14 @@ const demo: {
 })
 watchEffect(() => {
   const index = selectedRef.value
-  const d = demos[index]
+  const d: any = demos[index]
   demo.schema = d.schema
   demo.data = d.default
   demo.uiSchema = d.uiSchema
   demo.schemaCode = toJson(d.schema)
   demo.dataCode = toJson(d.default)
   demo.uiSchemaCode = toJson(d.uiSchema)
+  demo.customValidate = d.customValidate
 })
 
 function toJson(data: unknown) {
@@ -70,15 +71,15 @@ const handleChange = (v: unknown) => {
 }
 const schemaFormRef = ref<SchemaFormRef | null>(null)
 
-const doValidate = () => {
-  const validate = schemaFormRef.value?.doValidate()
-  console.log('validate: ', validate)
+const validateForm = () => {
+  const validate = schemaFormRef.value?.doValidate().then((result) => {
+    console.log('result: ', result)
+  })
 }
 </script>
 
 <template>
   <div class="container flex flex-col h-screen my-0 mx-auto">
-    <div id="extendApp"></div>
     <h1 class="text-xl font-bold my-2">Vue3 JsonSchema Form</h1>
     <div>
       <button
@@ -126,12 +127,13 @@ const doValidate = () => {
             :schema="demo.schema!"
             :on-change="handleChange"
             :value="demo.data"
+            :custom-validate="demo.customValidate"
           />
         </ThemeProvider>
 
         <button
           class="px-3 py-1 m-1 bg-slate-300 border rounded hover:bg-blue-400 hover:text-white"
-          @click="doValidate"
+          @click="validateForm"
         >
           校验
         </button>
